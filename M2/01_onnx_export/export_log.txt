@@ -1,0 +1,67 @@
+======================================================================
+ M2 TASK 1: ROBOFLOW MODEL EXPORT TO ONNX 
+======================================================================
+[*] Step 1: Loading original trained model from /home/forge/edge_ai_m2/models/model_v2_original.pt...
+    - Architecture:      YOLO Nano (yolo26n decoupled head)
+    - Parameter count:   2,504,190 parameters
+    - Target classes:    {0: 'enclosure'}
+    - Input resolution:  640x640
+    - PyTorch size:      5.17 MB
+
+[*] Step 2: Executing ONNX export (opset=17, imgsz=640)...
+Ultralytics 8.4.208 🚀 Python-3.13.5 torch-2.15.0+cpu CPU (aarch64)
+YOLO26n summary (fused): 120 layers, 2,375,031 parameters, 0 gradients, 5.3 GFLOPs
+
+[34m[1mPyTorch:[0m starting from '/home/forge/edge_ai_m2/models/model_v2_original.pt' with input shape (1, 3, 640, 640) BCHW and output shape(s) (1, 5, 8400) (5.2 MB)
+[31m[1mrequirements:[0m Ultralytics requirement ['onnxslim>=0.1.82'] not found, attempting AutoUpdate...
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting onnxslim>=0.1.82
+  Downloading onnxslim-0.1.99-py3-none-any.whl.metadata (13 kB)
+Collecting colorama (from onnxslim>=0.1.82)
+  Downloading https://www.piwheels.org/simple/colorama/colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Requirement already satisfied: ml-dtypes in /home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages (from onnxslim>=0.1.82) (0.6.0)
+Requirement already satisfied: onnx in /home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages (from onnxslim>=0.1.82) (1.23.2)
+Requirement already satisfied: packaging in /usr/lib/python3/dist-packages (from onnxslim>=0.1.82) (25.0)
+Requirement already satisfied: sympy>=1.13.3 in /home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages (from onnxslim>=0.1.82) (1.14.0)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages (from sympy>=1.13.3->onnxslim>=0.1.82) (1.3.0)
+Requirement already satisfied: numpy>=2.0.0 in /usr/lib/python3/dist-packages (from ml-dtypes->onnxslim>=0.1.82) (2.2.4)
+Requirement already satisfied: protobuf>=6.31.1 in /home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages (from onnx->onnxslim>=0.1.82) (7.36.2)
+Requirement already satisfied: typing_extensions>=4.7.1 in /home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages (from onnx->onnxslim>=0.1.82) (4.16.0)
+Downloading onnxslim-0.1.99-py3-none-any.whl (248 kB)
+Downloading https://www.piwheels.org/simple/colorama/colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Installing collected packages: colorama, onnxslim
+
+Successfully installed colorama-0.4.6 onnxslim-0.1.99
+
+[31m[1mrequirements:[0m AutoUpdate success ✅ 4.5s
+WARNING ⚠️ [31m[1mrequirements:[0m [1mRestart runtime or rerun command for updates to take effect[0m
+
+
+[34m[1mONNX:[0m starting export with onnx 1.23.2 opset 17...
+[34m[1mONNX:[0m slimming with onnxslim 0.1.99...
+[34m[1mONNX:[0m export success ✅ 8.4s, saved as '/home/forge/edge_ai_m2/models/model_v2_original.onnx' (9.3 MB)
+
+Export complete (10.7s)
+Results saved to [1m/home/forge/edge_ai_m2/models/model_v2_original.onnx[0m
+Predict:         yolo predict task=detect model=/home/forge/edge_ai_m2/models/model_v2_original.onnx imgsz=640 
+Validate:        yolo val task=detect model=/home/forge/edge_ai_m2/models/model_v2_original.onnx imgsz=640  
+Visualize:       https://netron.app
+    - Export completed in: 10.70 seconds
+    - Exported file:       /home/forge/edge_ai_m2/models/model_v2_original.onnx
+    - Final ONNX file:     /home/forge/edge_ai_m2/models/model_v2.onnx
+    - Final ONNX size:     9.34 MB
+
+[*] Step 3: Verifying structural graph integrity with onnx.checker...
+    [SUCCESS] ONNX graph is well-formed with valid topological ordering.
+    - ONNX Input Node:     images, Shape: [1, 3, 640, 640], Type: tensor(float)
+    - ONNX Output Node:    output0, Shape: [1, 5, 8400], Type: tensor(float)
+
+[*] Step 4: Validating numerical prediction parity on physical sample image...
+    - Testing with image:  IMG_9716_HEIC.rf.3c8813683d80285ad53efe2e0d31c566.jpg
+    - PyTorch detections:  1 object(s)
+      * Box 1: Class=0 (enclosure), Conf=0.9677, xyxy=[983.8, 832.7, 2859.1, 1992.0]
+    - ONNX Raw Output:     Shape=(1, 5, 8400) (Batch, Dims, Anchors)
+    [SUCCESS] ONNX runtime execution succeeded without errors.
+======================================================================
+ VERIFICATION RESULT: ONNX EXPORT FULLY OPERATIONAL 
+======================================================================

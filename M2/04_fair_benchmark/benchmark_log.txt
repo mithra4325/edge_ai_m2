@@ -1,0 +1,35 @@
+======================================================================
+ M2 TASK 4: FAIR BENCHMARK (20 WARM-UP + 100 TIMED RUNS @ BATCH 1)
+======================================================================
+[*] Initial CPU Temperature: 47.4°C
+[*] Available CPU Cores:      4
+[*] System Total RAM:         3.95 GB
+
+[*] Benchmarking PyTorch Model: model_v1_baseline.pt
+    - Running 20 warm-up iterations (batch=1)...
+    - Running 100 timed iterations (batch=1)...
+    [+] Saved raw data to: raw_benchmark_m1_pt.csv
+    [+] Stats: Median=474.46 ms | P95=584.71 ms | Mean=474.34 ms | FPS=2.11 | Size=5.16 MB
+
+[*] Benchmarking PyTorch Model: model_v2_original.pt
+    - Running 20 warm-up iterations (batch=1)...
+    - Running 100 timed iterations (batch=1)...
+    [+] Saved raw data to: raw_benchmark_m2_pt.csv
+    [+] Stats: Median=476.90 ms | P95=605.62 ms | Mean=481.28 ms | FPS=2.08 | Size=5.17 MB
+
+[*] Benchmarking ONNX Model: model_v2.onnx
+    - Running 20 warm-up iterations (batch=1)...
+    - Running 100 timed iterations (batch=1)...
+    [+] Saved raw data to: raw_benchmark_m2_onnx.csv
+    [+] Stats: Median=243.77 ms | P95=401.15 ms | Mean=244.12 ms | FPS=4.10 | Size=9.34 MB
+
+[*] Benchmarking ONNX Model: model_v2_int8.onnx
+    - Running 20 warm-up iterations (batch=1)...
+    - Running 100 timed iterations (batch=1)...
+    [+] Saved raw data to: raw_benchmark_m2_int8.csv
+    [+] Stats: Median=251.99 ms | P95=401.51 ms | Mean=258.25 ms | FPS=3.87 | Size=2.72 MB
+
+[+] Master benchmark summary written to: /home/forge/edge_ai_m2/M2/04_fair_benchmark/benchmark_summary.csv
+======================================================================
+ BENCHMARK COMPLETED SUCCESSFULLY
+======================================================================

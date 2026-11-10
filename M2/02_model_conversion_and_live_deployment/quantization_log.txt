@@ -1,0 +1,21 @@
+======================================================================
+ M2 TASK 2: MODEL CONVERSION AND DYNAMIC INT8 QUANTIZATION
+======================================================================
+[*] Input Model:  /home/forge/edge_ai_m2/models/model_v2.onnx
+    - Input Format:    FP32 ONNX
+    - Input File Size: 9.34 MB
+
+[*] Executing ONNX Runtime Dynamic INT8 Quantization...
+[+] Quantization completed successfully in 0.49 seconds.
+[*] Output Model: /home/forge/edge_ai_m2/models/model_v2_int8.onnx
+    - Output Format:    INT8 Quantized ONNX (ARM NEON optimized)
+    - Output File Size: 2.72 MB
+    - Size Reduction:   70.9%
+
+[*] Verifying INT8 model in ONNX Runtime InferenceSession...
+[+] Loaded successfully!
+    - Input Node:  images (Shape: [1, 3, 640, 640])
+    - Output Node: output0 (Shape: [1, 5, 8400])
+======================================================================
+ QUANTIZATION FULLY VERIFIED
+======================================================================

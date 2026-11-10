@@ -1,0 +1,5 @@
+model_name,format,size_mb,median_ms,p95_ms,mean_ms,min_ms,max_ms,fps,temp_c
+M1 Baseline (PyTorch FP32),PYTORCH,5.16,474.46,584.71,474.34,348.75,747.52,2.11,53.5
+M2 Original (PyTorch FP32),PYTORCH,5.17,476.90,605.62,481.28,358.75,694.02,2.08,56.2
+M2 Exported (ONNX FP32),ONNX,9.34,243.77,401.15,244.12,130.40,474.69,4.10,59.5
+M2 Optimized (ONNX INT8),ONNX,2.72,251.99,401.51,258.25,146.02,484.36,3.87,59.0

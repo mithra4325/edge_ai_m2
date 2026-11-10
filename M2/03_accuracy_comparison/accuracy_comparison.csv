@@ -1,0 +1,4 @@
+Model,Format,Model Size (MB),Precision (%),Recall (%),F1-Score,mAP@0.50 (%),mAP@0.5:0.95 (%),False Positives,False Negatives
+M1 Baseline,PyTorch FP32,5.17,93.90,100.00,0.9685,99.15,86.92,1,0
+M2 Original,PyTorch FP32,5.17,99.66,93.75,0.9662,96.03,82.57,0,1
+M2 Optimized,ONNX INT8,2.72,100.00,93.75,0.9677,95.80,81.91,0,1

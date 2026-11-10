@@ -1,0 +1,47 @@
+======================================================================
+ M2 TASK 3: RIGOROUS ACCURACY COMPARISON ON IDENTICAL TEST SET
+======================================================================
+[*] Test Dataset Images: 10 total test images in /home/forge/edge_ai_m2/data/test/images
+
+[*] Evaluating Model V1 Baseline (M1): /home/forge/edge_ai_m2/models/model_v1_baseline.pt...
+Ultralytics 8.4.208 🚀 Python-3.13.5 torch-2.15.0+cpu CPU (aarch64)
+YOLO26n summary (fused): 120 layers, 2,375,031 parameters, 0 gradients, 5.3 GFLOPs
+[34m[1mval: [0mFast image access ✅ (ping: 0.0±0.0 ms, read: 2210.5±149.0 MB/s, size: 842.3 KB)
+[K[34m[1mval: [0mScanning /home/forge/edge_ai_m2/data/test/labels.cache... 10 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 10/10 1.6Mit/s 0.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 1/1 6.3s/it 6.3s
+                   all         10         16      0.939          1      0.991      0.869
+Speed: 4.8ms preprocess, 526.0ms inference, 0.0ms loss, 12.0ms postprocess per image
+    - Precision:   93.90%
+    - Recall:      100.00%
+    - mAP@0.50:    99.15%
+    - mAP@0.5:0.95:86.92%
+
+[*] Evaluating Model V2 PyTorch FP32 (M2): /home/forge/edge_ai_m2/models/model_v2_original.pt...
+Ultralytics 8.4.208 🚀 Python-3.13.5 torch-2.15.0+cpu CPU (aarch64)
+YOLO26n summary (fused): 120 layers, 2,375,031 parameters, 0 gradients, 5.3 GFLOPs
+[34m[1mval: [0mFast image access ✅ (ping: 0.0±0.0 ms, read: 78.9±8.0 MB/s, size: 794.5 KB)
+[K[34m[1mval: [0mScanning /home/forge/edge_ai_m2/data/test/labels.cache... 10 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 10/10 2.8Mit/s 0.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 1/1 6.1s/it 6.1s
+                   all         10         16      0.997      0.938       0.96      0.826
+Speed: 4.9ms preprocess, 512.3ms inference, 0.0ms loss, 1.2ms postprocess per image
+    - Precision:   99.66%
+    - Recall:      93.75%
+    - mAP@0.50:    96.03%
+    - mAP@0.5:0.95:82.57%
+
+[*] Evaluating Model V2 INT8 ONNX (M2 Optimized): /home/forge/edge_ai_m2/models/model_v2_int8.onnx...
+    - Precision:   100.00%
+    - Recall:      93.75%
+    - mAP@0.50:    95.80%
+    - mAP@0.5:0.95:81.91%
+
+[*] Generating visual side-by-side detection comparisons...
+    [+] Saved comparison: /home/forge/edge_ai_m2/M2/03_accuracy_comparison/visual_comparisons/comparison_test_1.jpg
+    [+] Saved comparison: /home/forge/edge_ai_m2/M2/03_accuracy_comparison/visual_comparisons/comparison_test_2.jpg
+    [+] Saved comparison: /home/forge/edge_ai_m2/M2/03_accuracy_comparison/visual_comparisons/comparison_test_3.jpg
+    [+] Saved comparison: /home/forge/edge_ai_m2/M2/03_accuracy_comparison/visual_comparisons/comparison_test_4.jpg
+
+[+] Accuracy comparison saved to /home/forge/edge_ai_m2/M2/03_accuracy_comparison/accuracy_comparison.csv
+======================================================================
+ ACCURACY COMPARISON COMPLETED SUCCESSFULLY
+======================================================================

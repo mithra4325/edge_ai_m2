@@ -1,0 +1,60 @@
+{
+  "model_name": "mithu-1vntk/object-detection-n6b60-2-yolo26n-t2",
+  "roboflow_project_id": "object-detection-n6b60",
+  "roboflow_workspace": "mithu-1vntk",
+  "version": 2,
+  "model_type": "yolo26n (Ultralytics YOLO26 Nano)",
+  "framework": "Ultralytics PyTorch / ONNX Opset 17",
+  "classes": {
+    "0": "enclosure"
+  },
+  "num_classes": 1,
+  "input_resolution": [
+    640,
+    640
+  ],
+  "parameters": 2504190,
+  "gflops": 5.9,
+  "layers": 260,
+  "training_config": {
+    "job_type": "fine-tune",
+    "model_type": "yolo26n",
+    "finished_epochs": 305,
+    "start_timestamp": 1794319351,
+    "end_timestamp": 1794319986,
+    "duration_seconds": 634.48
+  },
+  "training_metrics": {
+    "validation_split": {
+      "images": 20,
+      "targets": 34,
+      "mAP_50": 0.9323,
+      "mAP_50_95": 0.8307,
+      "precision": 0.912,
+      "recall": 0.912,
+      "f1_score": 0.912,
+      "f1_confidence_threshold": 0.52
+    },
+    "test_split": {
+      "images": 10,
+      "targets": 16,
+      "mAP_50": 0.9307,
+      "mAP_50_95": 0.7796,
+      "precision": 1.0,
+      "recall": 0.938
+    }
+  },
+  "dataset_splits": {
+    "train": 71,
+    "valid": 20,
+    "test": 10,
+    "total_images": 101,
+    "total_targets": 173
+  },
+  "download_timestamp": "2026-11-10T19:48:47Z",
+  "files": {
+    "pytorch_weights": "models/model_v2_original.pt",
+    "onnx_model": "models/model_v2.onnx",
+    "dataset_config": "data/data.yaml"
+  }
+}
