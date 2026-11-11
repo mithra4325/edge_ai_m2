@@ -27,14 +27,14 @@ The trained PyTorch model (`object-detection-n6b60-2-yolo26n-t2`) was converted 
 Dynamic quantization was applied using ONNX Runtime's quantization toolkit:
 - **Weights Precision:** 32-bit IEEE float $\rightarrow$ 8-bit two's complement integer (`QInt8`).
 - **Dynamic Scale Factor:** Activations are dynamically scaled to 8-bit during inference, eliminating the need for a complex calibration dataset while preserving dynamic range.
-- **Target Operators:** `Conv`, `MatMul`, and `Gemm`.
+- **Node Transformation:** Replaced standard FP32 convolution operators with **102 `ConvInteger` nodes** and **92 `DynamicQuantizeLinear` nodes**.
 
 ### Quantization Mathematical Impact:
 $$\text{Quantized Weight} = \text{round}\left(\frac{\text{FP32 Weight}}{\text{Scale}}\right) + \text{ZeroPoint}$$
 
 - **File Size Reduction:** Reduced from **9.34 MB to 2.72 MB** (70.9% reduction).
 - **Memory Bandwidth Reduction:** 4x fewer bytes transferred across the memory bus per inference pass.
-- **Accuracy Retention:** mAP@0.50 dropped by only 0.23% (from 96.03% to 95.80%), while Precision reached 100.00%.
+- **Accuracy Retention:** mAP@0.50 maintained at **96.60%**, while Precision reached **99.67%**.
 
 ---
 
@@ -42,4 +42,4 @@ $$\text{Quantized Weight} = \text{round}\left(\frac{\text{FP32 Weight}}{\text{Sc
 
 - **SIMD Vectorization:** ARM NEON registers (128-bit) process four 32-bit floats or sixteen 8-bit integers in a single CPU cycle.
 - **Thread Tuning:** Through `sess_options.intra_op_num_threads = 4`, inference matrix operations are partitioned evenly across all four physical Cortex-A76 cores, maximizing hardware utilization without thread scheduling thrash.
-- **Total Pipeline Latency:** Achieved ~160 – 185 ms per frame, enabling a steady ~5.5 FPS live video feed.
+- **Benchmark Latency:** Pure model inference achieves **251.99 ms median** at batch 1 (3.87 FPS pure throughput). Full end-to-end webcam pipeline runs at **~3.2 to 3.8 FPS**.

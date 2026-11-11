@@ -7,7 +7,7 @@
 
 ## 1. Physical Hardware Inspection of the Deployment Target
 
-Before evaluating edge accelerators, we performed an exhaustive low-level hardware inspection of our deployment target:
+Low-level hardware verification on the test device:
 
 ```bash
 # Verify SoC and CPU Architecture
@@ -34,11 +34,11 @@ lsusb
 
 ---
 
-## 2. Comprehensive CPU vs Accelerator Comparison Table
+## 2. Hardware Comparison Matrix (Measured CPU vs. Theoretical Accelerators)
 
-The table below contrasts our CPU-only Raspberry Pi 5 deployment against dedicated embedded Edge AI hardware accelerators commonly used in robotics and smart manufacturing:
+> **Important Disclosure:** Only the **Raspberry Pi 5 CPU** was physically benchmarked. The values for Google Coral, Hailo-8L, and NVIDIA Jetson are theoretical comparisons derived from manufacturer data sheets to contextualize edge deployment feasibility.
 
-| Feature / Metric | Raspberry Pi 5 CPU *(Our Setup)* | Google Coral Edge TPU *(USB / M.2)* | Raspberry Pi AI Kit *(Hailo-8L NPU)* | NVIDIA Jetson Orin Nano *(TensorRT)* |
+| Feature / Metric | Raspberry Pi 5 CPU *(Empirically Measured)* | Google Coral Edge TPU *(Theoretical Spec)* | Raspberry Pi AI Kit *(Hailo-8L Spec)* | NVIDIA Jetson Orin Nano *(Theoretical Spec)* |
 | :--- | :--- | :--- | :--- | :--- |
 | **Processor Type** | 4x ARM Cortex-A76 CPU | Custom ASIC Tensor Processing Unit | Hailo-8L Deep Learning Co-processor | 6x ARM Cortex-A78AE + Ampere GPU |
 | **Vector / Tensor Engine** | ARM NEON 128-bit SIMD | Matrix Multiply Unit (TPU) | Structure-defined Neural Core | 1024 CUDA Cores + 32 Tensor Cores |
@@ -50,8 +50,8 @@ The table below contrasts our CPU-only Raspberry Pi 5 deployment against dedicat
 | **Primary Software Stack** | **ONNX Runtime (CPU / NEON)** | libedgetpu + PyCoral + TFLite | HailoRT + Hailo TAPPAS | TensorRT + CUDA + cuDNN |
 | **Compilation Requirement** | Direct execution (No compile step) | Requires `edgetpu_compiler` | Requires Hailo Dataflow Compiler | Requires TensorRT engine build |
 | **Operator Flexibility** | **100% of ONNX / PyTorch ops** | Highly restricted op subset | Restricted op subset | High op support |
-| **Achieved Enclosure FPS** | **~5 to 8 FPS (Sufficient)** | ~25 to 30 FPS | ~35 to 45 FPS | ~45 to 60 FPS |
-| **Verdict for this Project** | **Optimal:** Zero added cost, highly portable, >96% accuracy | Overkill & strict quantization constraints | Requires PCIe HAT, adds mechanical bulk | Prohibitive cost and power for simple enclosure QC |
+| **Measured/Est. Enclosure FPS**| **~3.2 – 3.8 FPS (Measured Live)** | ~25 to 30 FPS (Estimated) | ~35 to 45 FPS (Estimated) | ~45 to 60 FPS (Estimated) |
+| **Verdict for this Project** | **Optimal:** Zero added cost, highly portable, >96% mAP | Overkill & strict quantization constraints | Requires PCIe HAT, adds mechanical bulk | Prohibitive cost and power for simple enclosure QC |
 
 ---
 
@@ -79,13 +79,13 @@ The diagram below illustrates the exact 5-layer software architecture driving ou
 |   |                     ONNX Runtime Engine (v1.31.1)                         |   |
 |   |  Execution Provider: CPUExecutionProvider                                  |   |
 |   |  Instruction Acceleration: ARM64 NEON Vector Extensions                   |   |
-|   |  Threading Model: 4 parallel intra-op worker threads (OMP / pthread)       |   |
+|   |  Threading Model: 4 parallel intra-op worker threads                       |   |
 |   +---------------------------------------------------------------------------+   |
 |                                        ^                                          |
 |                                        | executes                                 |
 |   +------------------------------------+--------------------------------------+   |
 |   |            models/model_v2_int8.onnx (2.72 MB Quantized Model)             |   |
-|   |  - Dynamic INT8 Quantized Weights (Conv, MatMul, Gemm)                    |   |
+|   |  - Dynamic INT8 Quantized Weights (102 ConvInteger + 92 DynamicQuantize)  |   |
 |   |  - ONNX Opset 17 Standard Interoperability Format                         |   |
 |   +---------------------------------------------------------------------------+   |
 +-----------------------------------------------------------------------------------+
@@ -95,7 +95,7 @@ The diagram below illustrates the exact 5-layer software architecture driving ou
 |                     FRAMEWORK & NUMERICAL DEPENDENCIES                            |
 |                                                                                   |
 |   +----------------------+   +-----------------------+   +--------------------+   |
-|   | OpenCV (cv2) 4.11.0  |   | NumPy 2.2.4 (C-BLAS)  |   | Ultralytics YOLO   |   |
+|   | OpenCV (cv2) 5.0.0   |   | NumPy 2.2.4 (C-BLAS)  |   | Ultralytics 8.4.208|   |
 |   | - V4L2 Video Capture |   | - Fast Array Slicing  |   | - Export & Val     |   |
 |   | - Image Color Trans  |   | - Dynamic Dot Product |   | - Roboflow Weights |   |
 |   +----------------------+   +-----------------------+   +--------------------+   |
@@ -124,14 +124,3 @@ The diagram below illustrates the exact 5-layer software architecture driving ou
 |   +------------------------------------+   +----------------------------------+   |
 +-----------------------------------------------------------------------------------+
 ```
-
----
-
-## 4. Architectural Design Rationale
-
-1. **Why ARM NEON Optimization matters:**  
-   ARM NEON SIMD allows a single instruction to operate on multiple data points simultaneously (e.g., executing four 32-bit floating point or sixteen 8-bit integer operations per clock cycle). By quantizing to INT8, ONNX Runtime maximizes NEON vector pipeline throughput, slashing inference latency.
-2. **Elimination of PyTorch Overhead:**  
-   In Milestone 1, PyTorch FP32 had to load the entire dynamic autograd computational graph, consuming >500 MB RAM. In Milestone 2, ONNX Runtime runs a static pre-compiled computational graph in C++ without autograd overhead, consuming under 60 MB RAM.
-3. **Decoupled Architecture:**  
-   The application communicates with the inference engine purely via standard NumPy array memory pointers, eliminating memory copies and reducing pipeline latency.

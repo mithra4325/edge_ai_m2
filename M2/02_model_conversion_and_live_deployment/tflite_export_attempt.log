@@ -1,0 +1,24 @@
+WARNING ⚠️ 'int8' is deprecated and will be removed in the future. Use 'quantize' instead.
+WARNING ⚠️ format='tflite' is deprecated as of 8.4.83 and has been replaced by the unified Google LiteRT format. Exporting format='litert' instead. See https://docs.ultralytics.com/integrations/litert
+Ultralytics 8.4.208 🚀 Python-3.13.5 torch-2.15.0+cpu CPU (aarch64)
+WARNING ⚠️ INT8 export requires a missing 'data' arg for calibration. Using default 'data=coco8.yaml'.
+YOLO26n summary (fused): 120 layers, 2,375,031 parameters, 0 gradients, 5.3 GFLOPs
+
+[34m[1mPyTorch:[0m starting from '/home/forge/edge_ai_m2/models/model_v2_original.pt' with input shape (1, 3, 640, 640) BCHW and output shape(s) (1, 5, 8400) (5.2 MB)
+ERROR ❌ [34m[1mLiteRT:[0m export failure 0.0s: LiteRT export only supported on Linux x86 and macOS
+Export to tflite in the cloud with Ultralytics Platform: https://platform.ultralytics.com
+Traceback (most recent call last):
+  File "<string>", line 4, in <module>
+    m.export(format='tflite', int8=True)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages/ultralytics/engine/model.py", line 800, in export
+    return Exporter(overrides=args, _callbacks=self.callbacks)(model=self.model)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages/ultralytics/engine/exporter.py", line 1070, in __call__
+    f = getattr(self, f"export_{fmt}")()
+  File "/home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages/ultralytics/engine/exporter.py", line 551, in outer_func
+    f = inner_func(*args, **kwargs)  # exported file/dir or tuple of (file/dir, *)
+  File "/home/forge/edge-ai-enclosure-detection/venv/lib/python3.13/site-packages/ultralytics/engine/exporter.py", line 1353, in export_litert
+    assert MACOS or (LINUX and not ARM64), "LiteRT export only supported on Linux x86 and macOS"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: LiteRT export only supported on Linux x86 and macOS

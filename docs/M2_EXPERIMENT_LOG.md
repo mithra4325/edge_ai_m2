@@ -13,7 +13,7 @@ This log documents all experimental trials, model versions, conversions, and dia
 
 ### Experiment 2: Baseline Model Isolation
 - **Date & Time:** 2026-11-10 19:49 IST
-- **Action:** Read-only preservation of M1 model from `/home/forge/edge-ai-enclosure-detection/models/best.pt` to `/home/forge/edge_ai_m2/models/model_v1_baseline.pt` (5.17 MB, MD5: `b2e2066e20ac81a0ec7346debc1ec52f`).
+- **Action:** Read-only preservation of M1 model from `/home/forge/edge-ai-enclosure-detection/models/best.pt` to `/home/forge/edge_ai_m2/models/model_v1_baseline.pt` (5.16 MB, MD5: `b2e2066e20ac81a0ec7346debc1ec52f`).
 - **Verification:** Both M1 and M2 weights verified intact with distinct MD5 checksums.
 
 ### Experiment 3: Full ONNX Export and Graph Slimming
@@ -27,18 +27,26 @@ This log documents all experimental trials, model versions, conversions, and dia
 - **Date & Time:** 2026-11-10 19:54 IST
 - **Command:** `python3 M2/02_model_conversion_and_live_deployment/quantize_model.py`
 - **Method:** `onnxruntime.quantization.quantize_dynamic` targeting `Conv`, `MatMul`, `Gemm` operators.
-- **Result:** Generated `models/model_v2_int8.onnx` (2.72 MB).
+- **Result:** Generated `models/model_v2_int8.onnx` (2.72 MB, 102 `ConvInteger` nodes).
 - **Footprint Impact:** 70.9% size reduction. Verified inference on `IMG_9716_HEIC...` (Conf: 0.9683).
 
-### Experiment 5: Live Webcam Deployment & Real Device Validation
-- **Date & Time:** 2026-11-10 19:56 IST
-- **Device:** Logitech C270 USB Webcam on `/dev/video0`.
-- **Command:** `python3 M2/02_model_conversion_and_live_deployment/live_inference_m2.py --headless --test-frames 25 --save-snapshots`
-- **Result:** Successfully streamed 25 frames @ ~3.4 FPS without GUI and saved evidence frame `m2_live_frame_0025.jpg`.
-- **Verified HUD Capture:** Generated `m2_detection_hud_verified.jpg` showing high-confidence enclosure detection with latency and temperature telemetry.
+### Experiment 5: LiteRT / TFLite Export Investigation
+- **Date & Time:** 2026-11-11 17:56 IST
+- **Command:** `m.export(format='tflite', int8=True)`
+- **Finding:** Hard assertion failure: `AssertionError: LiteRT export only supported on Linux x86 and macOS`.
+- **Evidence:** Log saved to `M2/02_model_conversion_and_live_deployment/tflite_export_attempt.log`. Proves TFLite cannot build on Linux ARM64.
 
-### Experiment 6: Test Set Evaluation & False Positive Analysis
-- **Date & Time:** 2026-11-10 19:59 IST
+### Experiment 6: Live Webcam Deployment & GUI HighGUI Fix
+- **Date & Time:** 2026-11-11 17:57 IST
+- **Device:** Logitech C270 USB Webcam on `/dev/video0`.
+- **Finding:** `opencv-python-headless` in venv shadowed HighGUI. Removed `opencv-python-headless` so OpenCV uses native GTK display.
+- **Result:** `cv2.imshow` successfully tested on `DISPLAY=:0`.
+
+### Experiment 7: Official Test Set Evaluation Across Full PR Curve
+- **Date & Time:** 2026-11-11 17:58 IST
 - **Command:** `python3 M2/03_accuracy_comparison/evaluate_accuracy_comparison.py`
 - **Dataset:** 10 physical test images (16 enclosure ground truth instances).
-- **Key Finding:** M1 exhibited 93.90% Precision due to 1 false positive on a white table. M2 and M2 INT8 eliminated false positives completely (100.00% Precision) while preserving 95.80% mAP@0.50.
+- **Official Results:**
+  - M1 Baseline: Precision 93.90%, Recall 100.00%, mAP@0.50 99.15%, mAP@0.5:0.95 86.92%.
+  - M2 Original: Precision 99.66%, Recall 93.75%, mAP@0.50 96.03%, mAP@0.5:0.95 82.57%.
+  - M2 INT8 ONNX: Precision 99.67%, Recall 93.75%, mAP@0.50 96.60%, mAP@0.5:0.95 80.10%.

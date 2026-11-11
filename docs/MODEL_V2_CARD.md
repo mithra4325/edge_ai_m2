@@ -49,15 +49,16 @@
 ## Exported Formats & Checkpoints
 1. `models/model_v2_original.pt`: PyTorch FP32 checkpoint (5.17 MB, MD5: `ed26737f31d3f12d63cf3d27e9a4515c`)
 2. `models/model_v2.onnx`: Exported ONNX Opset 17 FP32 computational graph (9.34 MB)
-3. `models/model_v2_int8.onnx`: Quantized Dynamic INT8 ONNX graph (2.72 MB, 70.9% reduction)
+3. `models/model_v2_int8.onnx`: Quantized Dynamic INT8 ONNX graph (2.72 MB, 102 `ConvInteger` nodes)
 
 ---
 
-## Performance Metrics on Identical Test Set (10 images, 16 instances)
-- **Precision:** 100.00% (Zero false positives)
+## Verified Metrics on Identical Test Set (10 images, 16 instances)
+- **Precision:** 99.67% (0 false positives on test images at operational 0.40 conf)
 - **Recall:** 93.75%
-- **F1-Score:** 0.9677
-- **mAP@0.50:** 95.80%
-- **mAP@0.5:0.95:** 81.91%
-- **Edge Latency (Pi 5 CPU):** ~160 - 185 ms per frame (~5.5 FPS)
+- **F1-Score:** 0.9662
+- **mAP@0.50:** 96.60%
+- **mAP@0.5:0.95:** 80.10%
+- **Pure Inference Latency (Batch 1):** 251.99 ms median / 258.25 ms mean (3.87 FPS)
+- **Live Pipeline Framerate:** ~3.2 – 3.8 FPS (V4L2 grab + letterbox + infer + NMS + HUD)
 - **Runtime RAM:** < 60 MB
